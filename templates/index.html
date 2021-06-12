@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"  crossorigin="anonymous"></script>
+   
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  crossorigin="anonymous">
+
+    <title>Transliterations</title>
+  </head>
+  <body>
+    <div class="container-fluid bg-success mb-2 ">
+        <nav class="navbar navbar-inverse ">
+            <div class="container">
+              <div class="navbar-header">
+                <h1 class="navbar-brand">Transliterations</h1>
+              </div>
+            </div>
+          </nav>
+    </div>
+    <div class="container">
+      <div class="container mb-2"  align="right">
+        <select id="optionlang">
+          <option value="hindi">Hindi</option>
+          <option value="tamil">tamil</option>
+          <option value="telugu">telugu</option>
+          <option value="bengali">bengali</option>
+          <option value="gujarati">gujarati</option>
+          <option value="marathi">marathi</option>
+          <option value="kannada">kannada</option>
+          <option value="malayalam">malayalam</option>
+          <option value="punjabi">punjabi</option>
+          <option value="nepali">nepali</option>
+        </select>
+      </div>
+      <div class="container">
+        <textarea id="mytext" class="form-control mb-2" value="" rows="10" cols="20">
+          
+        </textarea>
+
+      </div>
+      <div class="container sugession" id="sugession">
+
+      </div>
+
+    </div>
+
+   <script>
+    $("#mytext").keyup(function(){
+    
+      var text=$("#mytext").val()
+      var lang=$("#optionlang").val();
+      $.ajax({
+        url:'/api/',
+        type:'get',
+        data:{
+          lang:lang,
+          text:text
+        },
+       
+        contentType:'application/json; charset=utf-8',
+        datatype:'json',
+        success:function(data){
+          var option=data["twords"][0]["options"]
+          $("#sugession").empty();
+          $.each(option,function(index,ds){
+            
+            var r=$('<input/>').attr({
+              type: "button",
+              id: "field",
+              class:"m-1",
+              value: ds
+          });
+            if(ds!==''){
+              $("#sugession").append(r);
+            }
+          })
+
+          $("input").click(function(){
+            var title=$(this).attr("value");
+           var m=$("#mytext").val().trim()
+            var x=m.split(' ');
+            console.log(x)
+            x.pop()
+            console.log(x)
+            var value=x.join(" ")+" "+title+" "
+            $("#mytext").val(value)
+            });
+        }
+        }
+      )
+    })
+    
+   </script>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"  crossorigin="anonymous"></script>
+  </body>
+</html>
